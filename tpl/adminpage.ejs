@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Real time Score</title>
+	<script src="/chat.js" ></script>
+	<link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.5.0/pure-min.css">
+	<script type='text/javascript' src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+<form class="pure-form">
+<div style=" margin-left: auto;margin-right: auto;width: 70%;background-color: #b0e0e6;padding:20px;">
+<div style="margin-top:20px">
+<div>
+Match Number :
+<div class="pure-u-1-4">
+	<input type="text" name="matchnumber" id="matchnumber" text="">
+</div>
+
+</div>
+
+<label for="email">Team</label>
+	<div class="pure-u-1-4">
+        <select name="team1" id="team1" class="pure-input-1">
+			<% teams.forEach( function ( teams ){ %>
+				<option name="<%= teams.name %>"><%= teams.name %></option>
+			<% }); %> 
+		</select>
+		  
+    </div>
+	VS
+    <div class="pure-u-1-4">
+        <select name="team2" id="team2" class="pure-input-1">
+			<% teams.forEach( function ( teams ){ %>
+				<option name="<%= teams.name %>"><%= teams.name %></option>
+			<% }); %> 
+		</select>
+    </div>
+</div>
+
+<div style="margin-top:20px">
+<label for="email">Toss</label>
+<div class="pure-u-1-4" >
+<select name="toss" id="toss" class="pure-input-1">
+<% teams.forEach( function ( teams ){ %>
+      <option name="<%= teams.name %>"><%= teams.name %></option>
+<% }); %> 
+</select>
+</div>
+Win
+<div class="pure-u-1-4" >
+<select name="batball" id="batball" class="pure-input-1">
+<option name="BAT">BAT</option>
+<option name="BALL">BALL</option>
+</select>
+</div>
+</div>
+<div style="margin-top:20px">
+<input type="radio" name="innings" id="innings1" value="1" /> Innings 1  
+<input type="radio" name="innings" id="innings2" value="2" /> Innings 2</div>
+<p>
+	Run : + <input type="text" name="run" id="run" /> Type : 
+	<select name="run_type" id="run_type">
+		<option name="Regular">Regular</option>
+		<option name="No Ball">No Ball</option>
+	<select>
+</p>
+
+<p> Ball + <input type="text" name="ball" id="ball" />  OVER: <input type="checkbox" name="over_flag" value="1" id="over_flag">
+<p> Wicket + <input type="text" name="wicket" id="wicket" />  
+
+<!--<input type="text" id = "totalball_1" value="0" />
+<input type="text" id = "totalball_2" value="0" />-->
+
+
+<p> Commentary : <textarea name="commentary" id="commentary" class="pure-input-1"></textarea></p>
+<br>
+<button type="button" class="pure-button pure-input-1-2 pure-button-primary" id="send">Submit</button>
+</div>
+</form>
+
+
+
+<div class="container">
+<h1>CD Cricket League 6</h1>
+<div class="matchHeading">Match:<span id="sc_team1"><% if (feed) { %><%=feed.team1%><% } %></span> Vs <span id="sc_team2"><% if (feed) { %><%=feed.team2%><% } %></span></div>
+<div class="matchHeading"><b>Toss </b>:Team <span id="sc_toss"><% if (feed) { %><%=feed.toss%><% } %></span> win the toss and elected to <span id="sc_batboll"><% if (feed) { %><%=feed.batball%><% } %></span></div>
+
+<%if(score_1){%>
+<div>Innings 1 : </div>
+<div class="matchHeading font18"> Run :&nbsp; <span class="whitetext" id="run_1"><%=score_1.run%></span> / <span class="whitetext" id="wicket_1">0</span>&nbsp;&nbsp;|&nbsp;&nbsp;<span class="whitetext" id="over_1"><%=score_1.over%></span>over</div>
+<input type="text" id = "totalball_1" value="<%=score_1.totalball%>" />
+<%}else{%>
+<div>Innings 1 : </div>
+<div class="matchHeading font18"> Run :&nbsp; <span class="whitetext" id="run_1">0</span> / <span class="whitetext" id="wicket_1">0</span>&nbsp;&nbsp;|&nbsp;&nbsp;<span class="whitetext" id="over_1">0.0</span>over</div>
+<input type="text" id = "totalball_1" value="0" />
+<%}%>
+
+
+<%if(score_2){%>
+<div>Innings 2 : </div>
+<div class="matchHeading font18"> Run :&nbsp; <span class="whitetext" id="run_2"><%=score_2.run%></span> / <span class="whitetext" id="wicket_2">0</span>&nbsp;&nbsp;|&nbsp;&nbsp;<span class="whitetext" id="over_2"><%=score_2.over%></span>over</div>
+<input type="text" id = "totalball_2" value="<%=score_2.totalball%>" />
+<%}else{%>
+<div>Innings 2 : </div>
+<div class="matchHeading font18"> Run :&nbsp; <span class="whitetext" id="run_2">0</span> / <span class="whitetext" id="wicket_2">0</span>&nbsp;&nbsp;|&nbsp;&nbsp;<span class="whitetext" id="over_2">0.0</span>over</div>
+<input type="text" id = "totalball_2" value="0" />
+<%}%>
+
+<%if(score_2){%>
+<div class="matchscoreCard" id="matchscoreCard"><%=entities.decode(score_2.runbyball)%></div>
+<%}else if(score_1){%>
+<div class="matchscoreCard" id="matchscoreCard"><%=entities.decode(score_1.runbyball)%></div>
+<%}else{%>
+<div class="matchscoreCard" id="matchscoreCard"></div>
+<%}%>
+
+<div id="content" class="commentary">
+<% commentary.forEach( function (commentary){ %>
+      <p><%= commentary.commentarydata %></p>
+<% }); %> 
+</div>
+</div>
+</body>
+</html>
